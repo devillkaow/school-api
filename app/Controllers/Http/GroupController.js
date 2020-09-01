@@ -49,6 +49,35 @@ class GroupController {
         
         return  { status: 200, error: undefined, data: { name } }
     }
+
+    async update ({ request }) {
+        const { body, params } = request 
+        const { id } = params
+        const { name } = body
+
+        const groupId = await Database
+            .table('groups')
+            .where({ group_id: id })
+            .update({ name })
+
+        const group = await Database
+            .table('groups')
+            .where({ group_id: groupId })
+            .first()
+        
+        return { status: 200, error: undefined, data: group }
+    }
+
+    async destroy({ request }){
+        const { id } = request.params
+
+        await Database
+            .table('groups')
+            .where({ group_id: id })
+            .delete()
+
+        return { status: 200, error: undefined, data: { message: 'success' }}
+    }
 }
 
 module.exports = GroupController

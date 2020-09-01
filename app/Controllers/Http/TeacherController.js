@@ -48,11 +48,40 @@ class TeacherController {
 
         const hashedPassword = await Hash.make(password)
 
-        const teacher = await Database
+        await Database
             .table('teachers')
             .insert({ firstname, lastname, email, password: hashedPassword })
         
         return  { status: 200, error: undefined, data: { firstname, lastname, email } }
+    }
+
+    async update ({ request }) {
+        const { body, params } = request 
+        const { id } = params
+        const { firstname, lastname, email } = body
+
+        const teacherId = await Database
+            .table('teachers')
+            .where({ teacher_id: id })
+            .update({ firstname, lastname, email })
+
+        const teacher = await Database
+            .table('teachers')
+            .where({ teacher_id: teacherId })
+            .first()
+        
+        return { status: 200, error: undefined, data: teacher }
+    }
+
+    async destroy({ request }){
+        const { id } = request.params
+
+        await Database
+            .table('teachers')
+            .where({ teacher_id: id })
+            .delete()
+
+        return { status: 200, error: undefined, data: { message: 'success' }}
     }
 }
 
