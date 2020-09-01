@@ -38,14 +38,17 @@ class StudentController {
 
         const missingKey = []
 
-        if(!firstname) missingKey.push('firstname')
-        if(!lastname) missingKey.push('lastname')
-        if(!email) missingKey.push('email')
-        if(!password) missingKey.push('password')
-        if(!group_id) missingKey.push('group_id')
+        const rules = {
+            firstname:'required',
+            lastname:'required',
+            email:'required|email|unique:students,email',
+            password:'required|min:8'
+        }
 
-        if(missingKey.legth)
-        return  { status: 422, error: `${missingKey} is missing.`, data:undefined }
+        const validation = await Validator.validateAll(request.body, rules)
+
+        if(validation.fails())
+            return { status: 422, error: validation.messages(), data: undefined }
 
         const hashedPassword = await Hash.make(password)
 
@@ -59,12 +62,12 @@ class StudentController {
     async update ({ request }) {
         const { body, params } = request 
         const { id } = params
-        const { firstname, lastname, password, email, group_id } = body
+        const { firstname, lastname, email, group_id } = body
 
         const studentId = await Database
             .table('students')
             .where({ student_id: id })
-            .update({ firstname, lastname, password, email, group_id })
+            .update({ firstname, lastname, email, group_id })
 
         const student = await Database
             .table('students')

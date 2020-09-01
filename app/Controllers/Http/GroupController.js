@@ -35,13 +35,14 @@ class GroupController {
     async store ({ request }){
         const { name } = request.body
 
-        const missingKey = []
+        const rules = {
+            name:'required'            
+        }
 
-        if(!name) missingKey.push('name')
+        const validation = await Validator.validateAll(request.body, rules)
 
-
-        if(missingKey.legth)
-        return  { status: 422, error: `${missingKey} is missing.`, data:undefined }
+        if(validation.fails())
+            return { status: 422, error: validation.messages(), data: undefined }
 
         const group = await Database
             .table('groups')

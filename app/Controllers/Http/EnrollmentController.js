@@ -35,16 +35,17 @@ class EnrollmentController {
     async store ({ request }){
         const { mark, mark_date, student_id, subject_id  } = request.body
 
-        const missingKey = []
+        const rules = {
+            mark:'required',
+            mark_date:'required',
+            student_id:'required',
+            subject_id:'required'            
+        }
 
-        if(!mark) missingKey.push('mark')
-        // if(!mark_date) missingKey.push('mark_date')
-        if(!student_id) missingKey.push('student_id')
-        if(!subject_id) missingKey.push('subject_id')
+        const validation = await Validator.validateAll(request.body, rules)
 
-
-        if(missingKey.legth)
-        return  { status: 422, error: `${missingKey} is missing.`, data:undefined }
+        if(validation.fails())
+            return { status: 422, error: validation.messages(), data: undefined }
 
         const enrollment = await Database
             .table('enrollments')

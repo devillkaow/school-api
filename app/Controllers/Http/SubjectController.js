@@ -35,14 +35,15 @@ class SubjectController {
     async store ({ request }){
         const { title, teacher_id } = request.body
 
-        const missingKey = []
+        const rules = {
+            title:'required|unique:subjects,title',
+            teacher_id:'required'            
+        }
 
-        if(!title) missingKey.push('title')
-        if(!teacher_id) missingKey.push('teacher_id')
+        const validation = await Validator.validateAll(request.body, rules)
 
-
-        if(missingKey.legth)
-        return  { status: 422, error: `${missingKey} is missing.`, data:undefined }
+        if(validation.fails())
+            return { status: 422, error: validation.messages(), data: undefined }
 
         const subject = await Database
             .table('subjects')
@@ -56,7 +57,7 @@ class SubjectController {
         const { id } = params
         const { title, teacher_id } = body
 
-        const teacherId = await Database
+        const subjectId = await Database
             .table('subjects')
             .where({ subject_id: id })
             .update({ title, teacher_id })
