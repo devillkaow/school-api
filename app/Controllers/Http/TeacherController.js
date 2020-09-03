@@ -3,6 +3,7 @@
 const Database= use('Database')
 const Hash = use('Hash')
 const Validator = use('Validator')
+const Teacher = use('App/Models/Teacher')
 
 function numberTypeParamValidator(number) {
     if(Number.isNaN(parseInt(number))) 
@@ -40,7 +41,7 @@ class TeacherController {
         const rules = {
             firstname:'required',
             lastname:'required',
-            email:'required|email|unique:teachers,email',
+            email:'required|email',
             password:'required|min:8'
         }
 
@@ -51,7 +52,7 @@ class TeacherController {
 
         const hashedPassword = await Hash.make(password)
 
-        await Database
+        const teacher = await Database
             .table('teachers')
             .insert({ firstname, lastname, email, password: hashedPassword })
         
