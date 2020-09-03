@@ -3,9 +3,9 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class Subject extends Model {
+class Group extends Model {
     static get primaryKey() {
-        return 'subject_id'
+        return 'group_id'
     }
     static get createdAtColumn() {
         return null;
@@ -14,13 +14,11 @@ class Subject extends Model {
         return null;
     }
 
-    teacher () {
-        return this.belongsTo('App/Models/Teacher')
+    student () {
+        return this.hasMany('App/Models/Student')
     }
-    enrollment () {
-        return this.hasMany('App/Models/Enrollment')
-    }
-    
+
+
 }
 
-module.exports = Subject
+module.exports = Group
