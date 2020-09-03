@@ -2,6 +2,7 @@
 
 const Database= use('Database')
 const Hash = use('Hash')
+const Student = use('App/Models/Stident')
 
 function numberTypeParamValidator(number) {
     if(Number.isNaN(parseInt(number))) 
@@ -11,9 +12,15 @@ function numberTypeParamValidator(number) {
 class StudentController {
 
     async index(){
-        const students = await Database.table('students')
+        const { references } = request.qs
+        const students = Student.query()
 
-        return { status: 200, error: undefined, data: students }
+        if (references) {
+            const extractedReferences = references.split(",")
+            students.with(extractedReferences)
+        }
+
+        return { status: 200, error: undefined, data: await students.fetch() }
     }
 
     async show( { request } ){

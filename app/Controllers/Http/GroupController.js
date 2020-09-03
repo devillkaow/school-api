@@ -1,6 +1,7 @@
 'use strict'
 
 const Database= use('Database')
+const Group = use('App/Models/Group')
 
 function numberTypeParamValidator(number) {
     if(Number.isNaN(parseInt(number))) 
@@ -10,11 +11,17 @@ function numberTypeParamValidator(number) {
 class GroupController {
 
     async index(){
-        const groups = await Database.table('groups')
+        const { references } = request.qs;
+        const groups = Group.query();
 
-        return { status: 200, error: undefined, data: groups }
+        if (references) {
+            const extractedReferences = references.split(",");
+            groups.with(extractedReferences);
+        }
+
+        return { status: 200, error: undefined, data: await groups.fetch() }
     }
-
+    
     async show( { request } ){
         const { id } = request.params
 

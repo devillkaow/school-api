@@ -1,6 +1,7 @@
 'use strict'
 
 const Database= use('Database')
+const Enrollment = use('App/Models/Enrollment')
 
 function numberTypeParamValidator(number) {
     if(Number.isNaN(parseInt(number))) 
@@ -10,9 +11,18 @@ function numberTypeParamValidator(number) {
 class EnrollmentController {
 
     async index(){
-        const enrollments = await Database.table('enrollments')
+        const { references } = request.qs
 
-        return { status: 200, error: undefined, data: enrollments }
+        const enrollments = Enrollment.query()
+
+        if (references) {
+            const extractedReferences = references.split(",");
+            extractedReferences.forEach((value) => {
+                enrollments.with(value)
+            })
+        }
+
+        return { status: 200, error: undefined, data: enrollments.fetch() }
     }
 
     async show( { request } ){
