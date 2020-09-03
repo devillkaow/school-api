@@ -27,31 +27,11 @@ Route.group(()=>{
   Route.resource('/teachers', 'TeacherController')
   Route.resource('/students', 'StudentController')
   Route.resource('/groups', 'GroupController')
+
   Route.resource('/subjects', 'SubjectController')
+  Route.get('/subject/:id/teacher', 'SubjectController.showTeacher')
+
   Route.resource('/enrollments', 'EnrollmentController')
-
-  // Route.get('/teachers','TeacherController.index')
-  // Route.get('/teachers/:id','TeacherController.show')
-  // Route.post('/teachers', 'TeacherController.store')
-  // Route.put('/teachers/:id', 'TeacherController.update')
-  // Route.patch('/teachers/:id', 'TeacherController.update')
-  // Route.delete('/teachers/:id', 'TeacherController.destroy')
-
-  // Route.get('/students','StudentController.index')
-  // Route.get('/students/:id','StudentController.show')
-  // Route.post('/students', 'StudentController.store')
-
-  // Route.get('/groups','GroupController.index')
-  // Route.get('/groups/:id','GroupController.show')
-  // Route.post('/groups', 'GroupController.store')
-
-  // Route.get('/subjects','SubjectController.index')
-  // Route.get('/subjects/:id','SubjectController.show')
-  // Route.post('/subjects', 'SubjectController.store')
-
-  // Route.get('/enrolls','EnrollController.index')
-  // Route.get('/enrolls/:id','EnrollController.show')
-  // Route.post('/enrolls', 'EnrollController.store')
 
 }).prefix('api/v1')
 
